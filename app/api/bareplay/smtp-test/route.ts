@@ -5,10 +5,15 @@ import { hostedSmtpLoginTest } from "../../../../lib/bareplay-mail";
 
 export const runtime = "nodejs";
 
-export async function POST() {
+async function requestPassword(request: Request) {
+  const body = (await request.json().catch(() => ({}))) as { password?: unknown };
+  return typeof body.password === "string" ? body.password : "";
+}
+
+export async function POST(request: Request) {
   try {
     const data = await getBarePlayData();
-    const result = await hostedSmtpLoginTest(data.draft);
+    const result = await hostedSmtpLoginTest(data.draft, { password: await requestPassword(request) });
     return NextResponse.json({
       ok: true,
       message: `Hosted SMTP login works for ${result.username} on ${result.host}.`,

@@ -135,6 +135,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
   const [csvContacts, setCsvContacts] = useState<CampaignContact[]>(initialDraft.csvContacts);
   const [typedContacts, setTypedContacts] = useState<CampaignContact[]>(initialDraft.typedContacts);
   const [pasteText, setPasteText] = useState(initialDraft.pasteText);
+  const [smtpPassword, setSmtpPassword] = useState("");
   const [saveStatus, setSaveStatus] = useState("Save your audience and delivery settings so the campaign is ready when you come back.");
   const [saving, setSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -364,6 +365,15 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
               />
             </label>
             <label className="field">
+              <span>Email password</span>
+              <input
+                autoComplete="current-password"
+                onChange={(event) => setSmtpPassword(event.target.value)}
+                type="password"
+                value={smtpPassword}
+              />
+            </label>
+            <label className="field">
               <span>From name</span>
               <input
                 onChange={(event) => setDraft((current) => ({ ...current, fromName: event.target.value }))}
@@ -441,7 +451,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
             </div>
           </div>
 
-          <HostedSendActions templateName={templateName} />
+          <HostedSendActions smtpPassword={smtpPassword} templateName={templateName} />
           <p className="quiet-note">
             Use the login check first if anything looks off, then send a live test before the full campaign run.
           </p>

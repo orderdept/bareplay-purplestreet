@@ -5,7 +5,12 @@ import { sendHostedBarePlayTestEmail } from "../../../../lib/bareplay-mail";
 
 export const runtime = "nodejs";
 
-export async function POST() {
+async function requestPassword(request: Request) {
+  const body = (await request.json().catch(() => ({}))) as { password?: unknown };
+  return typeof body.password === "string" ? body.password : "";
+}
+
+export async function POST(request: Request) {
   try {
     const data = await getBarePlayData();
     const template = data.latestTemplate;
@@ -17,7 +22,9 @@ export async function POST() {
       );
     }
 
-    const result = await sendHostedBarePlayTestEmail(data.draft, template.message);
+    const result = await sendHostedBarePlayTestEmail(data.draft, template.message, {
+      password: await requestPassword(request),
+    });
     return NextResponse.json({
       ok: true,
       message: `Sent hosted test to ${result.name} <${result.to}> from ${result.from}.`,

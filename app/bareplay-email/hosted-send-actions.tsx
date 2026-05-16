@@ -3,10 +3,11 @@
 import { useState } from "react";
 
 type Props = {
+  smtpPassword: string;
   templateName?: string | null;
 };
 
-export function HostedSendActions({ templateName }: Props) {
+export function HostedSendActions({ smtpPassword, templateName }: Props) {
   const [isTestingLogin, setIsTestingLogin] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [message, setMessage] = useState(
@@ -24,7 +25,11 @@ export function HostedSendActions({ templateName }: Props) {
     }
     setIsError(false);
     try {
-      const response = await fetch(path, { method: "POST" });
+      const response = await fetch(path, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: smtpPassword }),
+      });
       const data = (await response.json()) as { error?: string; message?: string };
       if (!response.ok) {
         throw new Error(data.error || "That hosted mail action could not finish.");
@@ -47,7 +52,7 @@ export function HostedSendActions({ templateName }: Props) {
       <div className="button-row">
         <button
           className="action-link ghost button-like"
-          disabled={isTestingLogin}
+          disabled={isTestingLogin || !smtpPassword.trim()}
           onClick={() => void runAction("/api/bareplay/smtp-test", "login")}
           type="button"
         >
@@ -55,7 +60,7 @@ export function HostedSendActions({ templateName }: Props) {
         </button>
         <button
           className="action-button"
-          disabled={isSendingTest || !templateName}
+          disabled={isSendingTest || !templateName || !smtpPassword.trim()}
           onClick={() => void runAction("/api/bareplay/send-test", "send")}
           type="button"
         >

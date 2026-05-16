@@ -20,6 +20,10 @@ type HostedSmtpConfig = {
   fromName: string;
 };
 
+type HostedCredentialOverrides = {
+  password?: string;
+};
+
 type SocketLike = net.Socket | tls.TLSSocket;
 
 function base64(value: string) {
@@ -267,12 +271,19 @@ class SmtpSession {
   }
 }
 
-export function hostedSmtpConfigFromDraft(draft: CampaignDraft): HostedSmtpConfig {
+export function hostedSmtpConfigFromDraft(
+  draft: CampaignDraft,
+  overrides: HostedCredentialOverrides = {},
+): HostedSmtpConfig {
   const username =
     process.env.BAREPLAY_EMAIL_SMTP_USERNAME?.trim().toLowerCase() ||
     process.env.BAREPLAY_EMAIL_IMAP_USERNAME?.trim().toLowerCase() ||
     draft.smtpUsername.trim().toLowerCase();
-  const password = process.env.BAREPLAY_EMAIL_SMTP_PASSWORD || process.env.BAREPLAY_EMAIL_IMAP_PASSWORD || "";
+  const password =
+    overrides.password?.trim() ||
+    process.env.BAREPLAY_EMAIL_SMTP_PASSWORD ||
+    process.env.BAREPLAY_EMAIL_IMAP_PASSWORD ||
+    "";
 
   if (!username || !password) {
     throw new Error("Hosted SMTP credentials are not configured yet on PS.");
@@ -288,8 +299,8 @@ export function hostedSmtpConfigFromDraft(draft: CampaignDraft): HostedSmtpConfi
   };
 }
 
-export async function hostedSmtpLoginTest(draft: CampaignDraft) {
-  const config = hostedSmtpConfigFromDraft(draft);
+export async function hostedSmtpLoginTest(draft: CampaignDraft, overrides: HostedCredentialOverrides = {}) {
+  const config = hostedSmtpConfigFromDraft(draft, overrides);
   const session = await SmtpSession.connect(config);
   try {
     if (config.security === "ssl") {
@@ -305,8 +316,12 @@ export async function hostedSmtpLoginTest(draft: CampaignDraft) {
   };
 }
 
-export async function sendHostedBarePlayTestEmail(draft: CampaignDraft, message: CampaignMessage) {
-  const config = hostedSmtpConfigFromDraft(draft);
+export async function sendHostedBarePlayTestEmail(
+  draft: CampaignDraft,
+  message: CampaignMessage,
+  overrides: HostedCredentialOverrides = {},
+) {
+  const config = hostedSmtpConfigFromDraft(draft, overrides);
   const session = await SmtpSession.connect(config);
   const recipient = { email: "oneteam@gmail.com", name: "Dan" };
   try {
