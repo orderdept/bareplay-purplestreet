@@ -201,7 +201,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
       if (!response.ok) {
         throw new Error(data.error || "Could not save the campaign setup.");
       }
-      setStatus(`Saved ${data.contactCount || 0} contacts to Purplestreet.`);
+      setStatus(`Saved ${data.contactCount || 0} contacts to BarePlay.`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Could not save the campaign setup.");
     } finally {
