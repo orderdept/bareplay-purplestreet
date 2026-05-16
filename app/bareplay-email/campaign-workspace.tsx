@@ -375,34 +375,46 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
 
         <small className="template-status">{saveStatus}</small>
 
-        <div className="table-wrap top-gap">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {visibleRows.length ? (
-                visibleRows.map((contact) => (
-                  <tr key={`${contact.email}-${contact.status}`}>
-                    <td>{contact.email}</td>
-                    <td>{contact.name || defaultContactName}</td>
-                    <td>
-                      <span className={`status-chip ${contact.status}`}>{contact.status}</span>
-                    </td>
-                  </tr>
-                ))
-              ) : (
+        <details className="recipient-panel top-gap">
+          <summary>
+            <span>
+              Recipient list
+              <strong>{contacts.length.toLocaleString()} total</strong>
+            </span>
+            <span className="recipient-panel-action">Open list</span>
+          </summary>
+          <div className="table-wrap recipient-table-wrap">
+            <table className="data-table">
+              <thead>
                 <tr>
-                  <td colSpan={3}>No contacts loaded yet.</td>
+                  <th>Email</th>
+                  <th>Name</th>
+                  <th>Status</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {visibleRows.length ? (
+                  visibleRows.map((contact) => (
+                    <tr key={`${contact.email}-${contact.status}`}>
+                      <td>{contact.email}</td>
+                      <td>{contact.name || defaultContactName}</td>
+                      <td>
+                        <span className={`status-chip ${contact.status}`}>{contact.status}</span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3}>No contacts loaded yet.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          {contacts.length > visibleRows.length ? (
+            <small className="template-status">Showing the first {visibleRows.length.toLocaleString()} recipients.</small>
+          ) : null}
+        </details>
       </article>
 
       <div className="split-grid">

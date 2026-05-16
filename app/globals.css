@@ -587,6 +587,66 @@ h1 {
   overflow: auto;
 }
 
+.recipient-panel {
+  background: var(--panel-soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.recipient-panel summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  list-style: none;
+  min-height: 54px;
+  padding: 0 14px;
+}
+
+.recipient-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.recipient-panel summary span:first-child {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-weight: 800;
+}
+
+.recipient-panel summary strong {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.recipient-panel-action {
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.recipient-panel[open] .recipient-panel-action {
+  font-size: 0;
+}
+
+.recipient-panel[open] .recipient-panel-action::after {
+  content: "Close list";
+  font-size: 0.9rem;
+}
+
+.recipient-table-wrap {
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+  max-height: 360px;
+}
+
+.recipient-panel .template-status {
+  padding: 10px 14px 14px;
+}
+
 .data-table {
   border-collapse: collapse;
   width: 100%;
