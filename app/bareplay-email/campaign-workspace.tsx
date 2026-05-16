@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { type CampaignContact, type CampaignDraft } from "../../lib/bareplay-types";
 import { HostedSendActions } from "./hosted-send-actions";
@@ -17,6 +17,7 @@ type DraftContact = CampaignContact & {
 
 const defaultContactName = "BarePlay Members";
 const emailPattern = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
+const keychainHelperUrl = "http://127.0.0.1:8787";
 
 function normalizeEmail(value: string) {
   const match = String(value || "").match(emailPattern);
@@ -136,6 +137,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
   const [typedContacts, setTypedContacts] = useState<CampaignContact[]>(initialDraft.typedContacts);
   const [pasteText, setPasteText] = useState(initialDraft.pasteText);
   const [smtpPassword, setSmtpPassword] = useState("");
+  const [keychainStatus, setKeychainStatus] = useState("Mac Keychain helper has not been checked yet.");
   const [saveStatus, setSaveStatus] = useState("Save your audience and delivery settings so the campaign is ready when you come back.");
   const [deliveryStatus, setDeliveryStatus] = useState("Add the mailbox password, then run the sender login check.");
   const [saving, setSaving] = useState(false);
@@ -244,6 +246,74 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
   }
 
   const visibleRows = contacts.slice(0, 300);
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function checkKeychain() {
+      try {
+        const response = await fetch(`${keychainHelperUrl}/status?username=${encodeURIComponent(draft.smtpUsername)}`);
+        const data = (await response.json()) as { hasPassword?: boolean };
+        if (ignore) return;
+        setKeychainStatus(
+          data.hasPassword
+            ? "Mac Keychain has a saved password for this sender."
+            : "Mac Keychain helper is running. No saved password found for this sender yet.",
+        );
+      } catch {
+        if (!ignore) {
+          setKeychainStatus("Mac Keychain helper is not running on this Mac.");
+        }
+      }
+    }
+
+    void checkKeychain();
+    return () => {
+      ignore = true;
+    };
+  }, [draft.smtpUsername]);
+
+  async function savePasswordToKeychain() {
+    if (!smtpPassword.trim()) {
+      setKeychainStatus("Enter the mailbox password first, then save it to Mac Keychain.");
+      return;
+    }
+    setKeychainStatus("Saving password to Mac Keychain...");
+    try {
+      const response = await fetch(`${keychainHelperUrl}/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: draft.smtpUsername, password: smtpPassword }),
+      });
+      const data = (await response.json().catch(() => ({}))) as { error?: string };
+      if (!response.ok) {
+        throw new Error(data.error || "Could not save the password to Mac Keychain.");
+      }
+      setKeychainStatus("Password saved to Mac Keychain for this sender.");
+    } catch (error) {
+      setKeychainStatus(error instanceof Error ? error.message : "Mac Keychain helper is not running on this Mac.");
+    }
+  }
+
+  async function loadPasswordFromKeychain() {
+    setKeychainStatus("Loading password from Mac Keychain...");
+    try {
+      const response = await fetch(`${keychainHelperUrl}/load`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: draft.smtpUsername }),
+      });
+      const data = (await response.json().catch(() => ({}))) as { error?: string; password?: string };
+      if (!response.ok || !data.password) {
+        throw new Error(data.error || "No saved Keychain password found for this sender.");
+      }
+      setSmtpPassword(data.password);
+      setKeychainStatus("Password loaded from Mac Keychain for this browser session.");
+      setDeliveryStatus("Password loaded from Mac Keychain. Run the sender login check when ready.");
+    } catch (error) {
+      setKeychainStatus(error instanceof Error ? error.message : "Mac Keychain helper is not running on this Mac.");
+    }
+  }
 
   return (
     <section className="workflow-stack">
@@ -389,8 +459,20 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
                 type="password"
                 value={smtpPassword}
               />
-              <small>Used for login/test in this browser session.</small>
+              <small>Used for login/test in this browser session. Save it to this Mac when you want to reuse it later.</small>
             </label>
+            <div className="field">
+              <span>Mac Keychain</span>
+              <div className="button-row">
+                <button className="action-link ghost button-like" onClick={() => void loadPasswordFromKeychain()} type="button">
+                  Use saved password
+                </button>
+                <button className="action-link ghost button-like" onClick={() => void savePasswordToKeychain()} type="button">
+                  Save to Mac Keychain
+                </button>
+              </div>
+              <small>{keychainStatus}</small>
+            </div>
             <label className="field">
               <span>From name</span>
               <input
