@@ -92,7 +92,7 @@ function draftFromCampaign(campaign: CampaignJob | null): CampaignDraft {
     csvContacts: [],
     typedContacts: [],
     pasteText: "",
-    smtpHost: "smtp.qboxmail.com",
+    smtpHost: "smtp.hostinger.com",
     smtpPort: 465,
     smtpSecurity: "ssl",
     smtpUsername: campaign?.smtp?.username || "info@bareplay.org",

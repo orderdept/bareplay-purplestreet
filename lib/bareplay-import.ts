@@ -156,7 +156,7 @@ class SimpleImapClient {
   private tag = 0;
 
   async connect() {
-    const host = process.env.BAREPLAY_EMAIL_IMAP_HOST || "imap.qboxmail.com";
+    const host = process.env.BAREPLAY_EMAIL_IMAP_HOST || "imap.hostinger.com";
     const port = Number(process.env.BAREPLAY_EMAIL_IMAP_PORT || "993");
     const username = process.env.BAREPLAY_EMAIL_IMAP_USERNAME || DEFAULT_SMTP_USER;
     const password = process.env.BAREPLAY_EMAIL_IMAP_PASSWORD || "";

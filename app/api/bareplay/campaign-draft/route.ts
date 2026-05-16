@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       csvContacts: sanitizeContacts(body.csvContacts),
       typedContacts: sanitizeContacts(body.typedContacts),
       pasteText: typeof body.pasteText === "string" ? body.pasteText : "",
-      smtpHost: typeof body.smtpHost === "string" ? body.smtpHost.trim() : "smtp.qboxmail.com",
+      smtpHost: typeof body.smtpHost === "string" ? body.smtpHost.trim() : "smtp.hostinger.com",
       smtpPort:
         typeof body.smtpPort === "number" && Number.isFinite(body.smtpPort) && body.smtpPort > 0
           ? Math.round(body.smtpPort)

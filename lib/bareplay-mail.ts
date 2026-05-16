@@ -300,7 +300,7 @@ export function hostedSmtpConfigFromDraft(
   }
 
   return {
-    host: draft.smtpHost.trim() || "smtp.qboxmail.com",
+    host: draft.smtpHost.trim() || "smtp.hostinger.com",
     port: draft.smtpPort || 465,
     security: draft.smtpSecurity,
     username,
