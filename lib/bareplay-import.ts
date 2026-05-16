@@ -9,6 +9,8 @@ const DELAYED_SUBJECT = "Delayed Mail (still being retried)";
 const BOUNCED_FOLDER = "BOUNCED";
 const DELAYED_FOLDER = "DELAYED";
 const UNSUB_FOLDER = "UNSUB";
+const IMAP_READ_TIMEOUT_MS = 25000;
+const MAX_IMPORT_SCAN_UIDS = 300;
 const BOUNCED_SUBJECT_PREFIXES = [
   "undeliver",
   "mail system error - returned mail with subject:",
@@ -302,6 +304,10 @@ class SimpleImapClient {
         reject(new Error("IMAP socket is not connected."));
         return;
       }
+      const timer = setTimeout(() => {
+        cleanup();
+        reject(new Error("IMAP server took too long to respond. Try Import Bounces again in a moment."));
+      }, IMAP_READ_TIMEOUT_MS);
       const onData = () => {
         cleanup();
         resolve();
@@ -315,6 +321,7 @@ class SimpleImapClient {
         reject(new Error("IMAP connection closed."));
       };
       const cleanup = () => {
+        clearTimeout(timer);
         this.socket?.off("data", onData);
         this.socket?.off("error", onError);
         this.socket?.off("close", onClose);
@@ -369,7 +376,8 @@ export async function runBarePlayBounceImport(
     await client.ensureFolder(DELAYED_FOLDER);
     await client.ensureFolder(UNSUB_FOLDER);
     await client.select("INBOX");
-    const uids = await client.searchAllUids();
+    const allUids = await client.searchAllUids();
+    const uids = allUids.slice(-MAX_IMPORT_SCAN_UIDS);
 
     const buckets: Record<string, string[]> = {
       [BOUNCED_FOLDER]: [],
@@ -461,6 +469,7 @@ export async function runBarePlayBounceImport(
       movedCount,
       movedDelayedCount,
       movedUnsubCount,
+      scannedCount: uids.length,
     };
   } finally {
     await client.logout();

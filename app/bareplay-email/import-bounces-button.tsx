@@ -12,6 +12,7 @@ type ImportResult = {
   movedCount: number;
   movedDelayedCount: number;
   movedUnsubCount: number;
+  scannedCount?: number;
 };
 
 export function ImportBouncesButton({ campaignSubject = "", senderEmail = "" }: { campaignSubject?: string; senderEmail?: string }) {
@@ -25,11 +26,14 @@ export function ImportBouncesButton({ campaignSubject = "", senderEmail = "" }: 
   async function handleImport() {
     setIsLoading(true);
     setIsError(false);
-    setMessage("");
+    setMessage("Importing bounces from the most recent inbox messages...");
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 120000);
     try {
       const response = await fetch("/api/bareplay/import-bounces", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           campaignSubject,
           password: window.sessionStorage.getItem("bareplay-email-password") || "",
@@ -41,13 +45,20 @@ export function ImportBouncesButton({ campaignSubject = "", senderEmail = "" }: 
         throw new Error(data.error || "Import Bounces could not finish.");
       }
       setMessage(
-        `Imported ${data.bounceCount} bounced addresses for "${data.campaignSubject || campaignSubject}", ${data.unsubscribeCount} unsubscribe replies, and moved ${data.movedCount} bounced, ${data.movedDelayedCount} delayed, and ${data.movedUnsubCount} unsubscribe inbox notices.`,
+        `Scanned ${data.scannedCount || 0} recent inbox messages. Imported ${data.bounceCount} bounced addresses for "${data.campaignSubject || campaignSubject}", ${data.unsubscribeCount} unsubscribe replies, and moved ${data.movedCount} bounced, ${data.movedDelayedCount} delayed, and ${data.movedUnsubCount} unsubscribe inbox notices.`,
       );
       router.refresh();
     } catch (error) {
       setIsError(true);
-      setMessage(error instanceof Error ? error.message : "Import Bounces could not finish.");
+      setMessage(
+        error instanceof DOMException && error.name === "AbortError"
+          ? "Import Bounces took too long and was stopped. Try again, or narrow the campaign subject."
+          : error instanceof Error
+            ? error.message
+            : "Import Bounces could not finish.",
+      );
     } finally {
+      window.clearTimeout(timer);
       setIsLoading(false);
     }
   }
