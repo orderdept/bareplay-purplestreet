@@ -155,13 +155,16 @@ class SimpleImapClient {
   private buffer = Buffer.alloc(0);
   private tag = 0;
 
-  async connect() {
+  async connect(overrides: { password?: string; username?: string } = {}) {
     const host = process.env.BAREPLAY_EMAIL_IMAP_HOST || "imap.hostinger.com";
     const port = Number(process.env.BAREPLAY_EMAIL_IMAP_PORT || "993");
-    const username = process.env.BAREPLAY_EMAIL_IMAP_USERNAME || DEFAULT_SMTP_USER;
-    const password = process.env.BAREPLAY_EMAIL_IMAP_PASSWORD || "";
+    const username =
+      overrides.username?.trim().toLowerCase() ||
+      process.env.BAREPLAY_EMAIL_IMAP_USERNAME ||
+      DEFAULT_SMTP_USER;
+    const password = overrides.password?.trim() || process.env.BAREPLAY_EMAIL_IMAP_PASSWORD || "";
     if (!password) {
-      throw new Error("BAREPLAY_EMAIL_IMAP_PASSWORD is not configured.");
+      throw new Error("Enter the mailbox password in Step 3 before importing bounces.");
     }
 
     this.socket = tls.connect({
@@ -346,7 +349,10 @@ async function mergedSuppressionMap() {
   return map;
 }
 
-export async function runBarePlayBounceImport(campaignSubject?: string) {
+export async function runBarePlayBounceImport(
+  campaignSubject?: string,
+  overrides: { password?: string; username?: string } = {},
+) {
   const suppressions = await mergedSuppressionMap();
   const campaignRecipients = await readCampaignRecipients();
   const client = new SimpleImapClient();
@@ -358,7 +364,7 @@ export async function runBarePlayBounceImport(campaignSubject?: string) {
   let movedUnsubCount = 0;
 
   try {
-    await client.connect();
+    await client.connect(overrides);
     await client.ensureFolder(BOUNCED_FOLDER);
     await client.ensureFolder(DELAYED_FOLDER);
     await client.ensureFolder(UNSUB_FOLDER);

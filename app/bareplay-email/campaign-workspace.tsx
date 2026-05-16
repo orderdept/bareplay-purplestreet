@@ -248,6 +248,14 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
   const visibleRows = contacts.slice(0, 300);
 
   useEffect(() => {
+    if (smtpPassword.trim()) {
+      window.sessionStorage.setItem("bareplay-email-password", smtpPassword);
+    } else {
+      window.sessionStorage.removeItem("bareplay-email-password");
+    }
+  }, [smtpPassword]);
+
+  useEffect(() => {
     let ignore = false;
 
     async function loadSavedPassword() {

@@ -164,7 +164,10 @@ export default async function BarePlayEmailPage() {
           <h2>Suppressions</h2>
           <p>{compactNumber(data.suppressions.length)} addresses are excluded from future sends.</p>
           <div className="button-row">
-            <ImportBouncesButton campaignSubject={latestCampaign?.subject || template?.message.subject || ""} />
+            <ImportBouncesButton
+              campaignSubject={latestCampaign?.subject || template?.message.subject || ""}
+              senderEmail={data.draft.smtpUsername}
+            />
           </div>
           <div className="button-row">
             <a className="action-link" href="/api/bareplay/suppressions/export.csv">

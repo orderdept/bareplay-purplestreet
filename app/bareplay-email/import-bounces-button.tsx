@@ -14,7 +14,7 @@ type ImportResult = {
   movedUnsubCount: number;
 };
 
-export function ImportBouncesButton({ campaignSubject = "" }: { campaignSubject?: string }) {
+export function ImportBouncesButton({ campaignSubject = "", senderEmail = "" }: { campaignSubject?: string; senderEmail?: string }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [suppressionEmail, setSuppressionEmail] = useState("");
@@ -30,7 +30,11 @@ export function ImportBouncesButton({ campaignSubject = "" }: { campaignSubject?
       const response = await fetch("/api/bareplay/import-bounces", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ campaignSubject }),
+        body: JSON.stringify({
+          campaignSubject,
+          password: window.sessionStorage.getItem("bareplay-email-password") || "",
+          username: senderEmail,
+        }),
       });
       const data = (await response.json()) as ImportResult & { error?: string };
       if (!response.ok) {
@@ -107,7 +111,7 @@ export function ImportBouncesButton({ campaignSubject = "" }: { campaignSubject?
         </button>
       </div>
       <p className={`inline-status ${isError ? "error-text" : ""}`}>
-        {message || `Scans the inbox for notices tied to "${campaignSubject || "the current campaign"}", files them, updates live suppressions, and lets you add one-offs by hand.`}
+        {message || `Scans the inbox for notices tied to "${campaignSubject || "the current campaign"}", using the Step 3 mailbox password when available.`}
       </p>
     </div>
   );
