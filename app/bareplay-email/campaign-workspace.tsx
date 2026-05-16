@@ -390,27 +390,27 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
           <div className="field">
             <span>Upload CSV</span>
             <div className="csv-upload-row">
-              <input ref={fileInputRef} accept=".csv,.txt" onChange={handleCsvChange} type="file" />
-              <span className="csv-mode-options" role="radiogroup" aria-label="CSV import mode">
+              <div className="csv-mode-options" role="radiogroup" aria-label="CSV import mode">
                 <label>
                   <input
-                  checked={csvImportMode === "replace"}
-                  name="csv-import-mode"
-                  onChange={() => setCsvImportMode("replace")}
-                  type="checkbox"
-                />
-                Replace
-              </label>
-                <label>
-                  <input
-                  checked={csvImportMode === "add"}
-                  name="csv-import-mode"
-                  onChange={() => setCsvImportMode("add")}
-                  type="checkbox"
-                />
-                Add to existing
+                    checked={csvImportMode === "replace"}
+                    name="csv-import-mode"
+                    onChange={() => setCsvImportMode("replace")}
+                    type="checkbox"
+                  />
+                  Replace
                 </label>
-              </span>
+                <label>
+                  <input
+                    checked={csvImportMode === "add"}
+                    name="csv-import-mode"
+                    onChange={() => setCsvImportMode("add")}
+                    type="checkbox"
+                  />
+                  Add to existing
+                </label>
+              </div>
+              <input ref={fileInputRef} accept=".csv,.txt" onChange={handleCsvChange} type="file" />
             </div>
           </div>
           <label className="field">
