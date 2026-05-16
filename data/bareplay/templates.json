@@ -1,0 +1,79 @@
+[
+  {
+    "id": "bareplay-approved",
+    "name": "Membership Application Approved",
+    "updatedAt": "2026-05-16T00:00:00.000Z",
+    "message": {
+      "subject": "Your BarePlay Membership Application Has Been Approved",
+      "previewText": "Your BarePlay membership application has been approved.",
+      "body": "Hi {{name}},\n\nThank you for your membership application to BarePlay. We are happy to let you know that you have been approved.\n\nWe appreciate your interest in our community and look forward to meeting you both at an upcoming party. You will receive event announcements and participation details as they are released.\n\nIf you have any questions before your first event, feel free to reply to this email.\n\nWelcome to BarePlay. We are excited to connect with you soon.\n\nWarm regards,\n\nBarePlay Membership Team",
+      "mailingAddress": "BarePlay\nbareplay.org"
+    }
+  },
+  {
+    "id": "bareplay-tentative",
+    "name": "Tentative Approval And Next Steps",
+    "updatedAt": "2026-05-16T00:00:00.000Z",
+    "message": {
+      "subject": "BarePlay Membership - Tentative Approval & Next Steps",
+      "previewText": "Your BarePlay application has been tentatively approved. Here are the next steps.",
+      "body": "Hello {{name}},\n\nThank you for applying for membership with BarePlay. We are pleased to let you know that your application has been tentatively approved.\n\nFinal approval will be granted after your enrollment fee has been received and our background check process has been completed. Once those steps are finished, you will receive a follow-up email confirming your official membership status.\n\nPlease review the important information below to help you prepare for membership and future events.\n\n1. Enrollment Fee and Background Check\n\nYour membership becomes official after we receive your one-time enrollment fee of $25 per couple and complete the background check. The payment link is located at the bottom of the Membership page in Step 2. Enrollment fees are non-refundable, as they are used to cover the cost of the background screening.\n\n2. Event Tickets\n\nPlease do not purchase tickets for any events until you have received your final approval email.\n\n3. Test Results Requirement\n\nBefore attending your first event after final approval, please email us updated test results dated within 90 days of the event. Your first submission must include results for both partners.\n\n4. No Smoking Or Vaping Policy\n\nOur events are strictly non-smoking and non-vaping. This includes tobacco, cannabis, and any other substances, both indoors and outdoors.\n\n5. Risk Awareness and Responsibility\n\nWhile we require testing and aim to create a safer environment, no system can guarantee zero risk. All participants must understand and accept this reality.\n\nWe are looking forward to meeting you and building a trusted, respectful, and connected community together.\n\nWarm regards,\n\nDan / Sophie / Sugar / Amanda\n\nBarePlay",
+      "mailingAddress": "BarePlay\nbareplay.org"
+    }
+  },
+  {
+    "id": "bareplay-final",
+    "name": "Final Approval Confirmed",
+    "updatedAt": "2026-05-16T00:00:00.000Z",
+    "message": {
+      "subject": "BarePlay Membership - Final Approval Confirmed",
+      "previewText": "Your BarePlay membership is now fully approved.",
+      "body": "Hello {{name}},\n\nGreat news. Your background check has been completed and you are now fully approved for membership with BarePlay. Welcome to our ever-growing circle of merrymakers.\n\nOur upcoming party is scheduled for [DATE], and we would love to see you there if your schedule allows. Before attending, please remember to submit your current test results, dated within 90 days of the event, and purchase your ticket through the Events page on our website.\n\nOur goal is to create a different kind of gathering, centered on connection, trust, emotional maturity, and mutual respect among like-minded people. We are building a community first, and a party second. We hope that intention resonates with you as much as it does us.\n\nIf you have any questions before your first event, feel free to reply anytime.\n\nLooking forward to meeting you soon.\n\nWarm regards,\n\nDan / Sophie / Sugar / Amanda\n\nBarePlay",
+      "mailingAddress": "BarePlay\nbareplay.org"
+    }
+  },
+  {
+    "id": "bareplay-event-reminder",
+    "name": "Event Reminder",
+    "updatedAt": "2026-05-16T00:00:00.000Z",
+    "message": {
+      "subject": "BarePlay Party Reminder - [DATE] ([TIME])",
+      "previewText": "A quick reminder about the upcoming BarePlay party.",
+      "body": "Hey {{name}},\n\nJust a quick reminder about our upcoming BarePlay party on [DATE] from [TIME].\n\nIf you have not submitted your test results yet, please reply to this email and attach them. Results must be dated within 90 days of the event. If you already submitted results for the last party and they are still within that 90-day window, you are all set.\n\nA couple quick checklist items:\n\n- Enrollment fee: if you have not paid yet, you can do so on the Membership page.\n- Event ticket: be sure to grab your ticket from the Events page.\n\nAs a reminder, the process is:\n\n1. Membership application.\n2. One-time enrollment fee for background check.\n3. Test results.\n4. Event ticket purchase.\n\nWe are excited to keep building this community with you. Food and soft drinks will be available, and you are welcome to bring anything extra you would like.\n\nCheers,\n\nDan / Sophie / Sugar / Sage\n\nBarePlay.org",
+      "mailingAddress": "BarePlay\nbareplay.org"
+    }
+  },
+  {
+    "id": "bareplay-rsvp",
+    "name": "Attendance Estimate",
+    "updatedAt": "2026-05-16T00:00:00.000Z",
+    "message": {
+      "subject": "Quick RSVP Check For The Upcoming BarePlay Party",
+      "previewText": "Can you reply with a quick update about whether you plan to attend?",
+      "body": "Hi {{name}},\n\nWe are getting excited about the upcoming party.\n\nIf you are planning to attend, please reply to this email and let us know. We understand that some of you may still be waiting on test results, but if you could give us an update on where you are in that process, it would really help us estimate how many people will be joining us.\n\nThe weather is starting to heat up, so we are hoping the pool will be ready and comfortable by party day.\n\nCheers,\n\nDan / Sophie / Sugar / Sage\n\nBarePlay.org",
+      "mailingAddress": "BarePlay\nbareplay.org"
+    }
+  },
+  {
+    "id": "bareplay-date-change",
+    "name": "Date Change",
+    "updatedAt": "2026-05-16T00:00:00.000Z",
+    "message": {
+      "subject": "BarePlay Party Update - New Date Announced",
+      "previewText": "The upcoming BarePlay party has a new date.",
+      "body": "Hi {{name}},\n\nOur upcoming BarePlay party has been rescheduled from [OLD DATE] to [NEW DATE].\n\nIf you were not able to make the original date but are available on the new date, now is your chance. We encourage you to apply for membership on our website and get the process started.\n\nThere is still time to complete your testing if you begin promptly with most facilities. For details on testing and other common questions, please check out our FAQ section.\n\nWe are excited to meet more of you soon.\n\nSee you there,\n\nDan / Sophie / Sugar / Sage\n\nBarePlay.org",
+      "mailingAddress": "BarePlay\nbareplay.org"
+    }
+  },
+  {
+    "id": "bareplay-decline",
+    "name": "Membership Decline",
+    "updatedAt": "2026-05-16T00:00:00.000Z",
+    "message": {
+      "subject": "BarePlay Membership Inquiry Follow-Up",
+      "previewText": "A follow-up about your BarePlay membership inquiry.",
+      "body": "Hi {{name}},\n\nThank you again for your interest in BarePlay and for taking the time to share more about yourselves with us.\n\nAfter reviewing everything and looking at the way our events are currently structured, we do not think BarePlay is the right fit for you at this time. Our parties are built around a specific interaction format and compatibility model among attendees, and we try to be careful about maintaining that balance so expectations line up for everyone involved.\n\nThis is not a judgment of either of you personally. We appreciate your openness and wish you both the best in finding spaces that are a better match for what you are looking for.\n\nWarmly,\n\nDan\n\nBarePlay",
+      "mailingAddress": "BarePlay\nbareplay.org"
+    }
+  }
+]

@@ -1,0 +1,14 @@
+.next
+node_modules
+.vercel
+.env
+.env.local
+.env.*.local
+coverage
+dist
+build
+CHAT_INDEX.md
+EMAIL_TEMPLATES.md
+PROJECT_MEMORY.md
+SOCIAL_AND_FLYER_COPY.md
+flyers/
