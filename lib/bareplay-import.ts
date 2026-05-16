@@ -6,9 +6,9 @@ import { getConvexSuppressions, replaceConvexSuppressions, type SuppressionSourc
 
 const DEFAULT_SMTP_USER = "info@bareplay.org";
 const DELAYED_SUBJECT = "Delayed Mail (still being retried)";
-const BOUNCED_FOLDER = "BOUNCED";
-const DELAYED_FOLDER = "DELAYED";
-const UNSUB_FOLDER = "UNSUB";
+const BOUNCED_FOLDER = "INBOX.BOUNCED";
+const DELAYED_FOLDER = "INBOX.DELAYED";
+const UNSUB_FOLDER = "INBOX.UNSUB";
 const IMAP_READ_TIMEOUT_MS = 25000;
 const MAX_IMPORT_SCAN_UIDS = 300;
 const BOUNCED_SUBJECT_PREFIXES = [
