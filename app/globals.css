@@ -430,14 +430,28 @@ h1 {
   width: 100%;
 }
 
+.field input,
+.field select {
+  height: 46px;
+}
+
 .field textarea {
   line-height: 1.55;
   resize: vertical;
 }
 
+.keychain-field {
+  gap: 0;
+}
+
 .keychain-field .action-link {
+  height: 46px;
   justify-self: start;
   min-height: 46px;
+}
+
+.keychain-field small {
+  margin-top: 8px;
 }
 
 .field.full {
