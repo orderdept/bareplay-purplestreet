@@ -83,9 +83,9 @@ function htmlParagraphs(text: string) {
       if (blockLines.length && blockLines.every(isBulletLine)) {
         const items = blockLines
           .map((line) => line.replace(/^\s*[-*]\s+/, ""))
-          .map((line) => `<li style="margin:0 0 6px 0;">${inlineMarkup(line)}</li>`)
+          .map((line) => `<li style="margin:0 0 6px 0;text-align:left;letter-spacing:normal;word-spacing:normal;">${inlineMarkup(line)}</li>`)
           .join("");
-        return `<ul style="margin:0 0 14px 22px;padding:0;">${items}</ul>`;
+        return `<ul style="margin:0 0 14px 22px;padding:0;text-align:left;letter-spacing:normal;word-spacing:normal;">${items}</ul>`;
       }
 
       const lines = block
@@ -94,7 +94,7 @@ function htmlParagraphs(text: string) {
         .filter(Boolean)
         .map((line) => inlineMarkup(line))
         .join("<br />");
-      return `<p style="margin:0 0 14px 0;">${lines}</p>`;
+      return `<p style="margin:0 0 14px 0;text-align:left;letter-spacing:normal;word-spacing:normal;">${lines}</p>`;
     })
     .join("");
 }
@@ -115,7 +115,7 @@ function buildHtmlBody(message: CampaignMessage, contact: MailRecipient) {
 
   return `<!doctype html>
 <html>
-  <body style="font-family: Arial, sans-serif; color: #201725; line-height: 1.45; margin:0; padding:0;">
+  <body style="font-family: Arial, sans-serif; color: #201725; line-height: 1.45; margin:0; padding:0; text-align:left; letter-spacing:normal; word-spacing:normal;">
     <span style="display:none!important;opacity:0;color:transparent;height:0;width:0;overflow:hidden;">${preview}</span>
     ${body}
     <hr style="border:0;border-top:1px solid #eadfed;margin:22px 0;" />
