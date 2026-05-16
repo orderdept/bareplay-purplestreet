@@ -440,12 +440,13 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
               </select>
             </label>
             <label className="field">
-              <span>Sender email</span>
+              <span>Sender</span>
               <input
                 onChange={(event) => setDraft((current) => ({ ...current, smtpUsername: event.target.value }))}
                 type="email"
                 value={draft.smtpUsername}
               />
+              <small>This is the mailbox used for SMTP login and the From address.</small>
             </label>
             <label className="field">
               <span>Email password</span>
