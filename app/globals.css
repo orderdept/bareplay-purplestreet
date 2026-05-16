@@ -464,6 +464,43 @@ h1 {
   grid-column: 1 / -1;
 }
 
+.segmented-control {
+  background: var(--panel-soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+}
+
+.segmented-control label {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 10px;
+  text-align: center;
+}
+
+.segmented-control label + label {
+  border-left: 1px solid var(--line);
+}
+
+.segmented-control input {
+  accent-color: var(--accent);
+  height: auto;
+  padding: 0;
+  width: auto;
+}
+
+.segmented-control label:has(input:checked) {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 800;
+}
+
 .composer-label-row {
   align-items: center;
   display: flex;

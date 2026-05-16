@@ -138,6 +138,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
   const [csvContacts, setCsvContacts] = useState<CampaignContact[]>(initialDraft.csvContacts);
   const [typedContacts, setTypedContacts] = useState<CampaignContact[]>(initialDraft.typedContacts);
   const [pasteText, setPasteText] = useState(initialDraft.pasteText);
+  const [csvImportMode, setCsvImportMode] = useState<"replace" | "add">("replace");
   const [smtpPassword, setSmtpPassword] = useState("");
   const [keychainStatus, setKeychainStatus] = useState("Checking Mac Keychain...");
   const [saveStatus, setSaveStatus] = useState("Save your audience and delivery settings so the campaign is ready when you come back.");
@@ -231,7 +232,8 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
   async function handleCsvChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
-    const nextCsvContacts = contactsFromCsv(await file.text());
+    const importedContacts = contactsFromCsv(await file.text());
+    const nextCsvContacts = csvImportMode === "add" ? [...csvContacts, ...importedContacts] : importedContacts;
     setCsvContacts(nextCsvContacts);
     await saveSetup(draft, nextCsvContacts, typedContacts, pasteText);
   }
@@ -388,6 +390,26 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
           <label className="field">
             <span>Upload CSV</span>
             <input ref={fileInputRef} accept=".csv,.txt" onChange={handleCsvChange} type="file" />
+            <span className="segmented-control" role="radiogroup" aria-label="CSV import mode">
+              <label>
+                <input
+                  checked={csvImportMode === "replace"}
+                  name="csv-import-mode"
+                  onChange={() => setCsvImportMode("replace")}
+                  type="radio"
+                />
+                Replace list
+              </label>
+              <label>
+                <input
+                  checked={csvImportMode === "add"}
+                  name="csv-import-mode"
+                  onChange={() => setCsvImportMode("add")}
+                  type="radio"
+                />
+                Add to existing list
+              </label>
+            </span>
           </label>
           <label className="field">
             <span>Paste email addresses</span>
