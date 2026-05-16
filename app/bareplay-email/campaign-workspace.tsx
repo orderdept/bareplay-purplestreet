@@ -387,30 +387,32 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
         </div>
 
         <div className="host-form-grid">
-          <label className="field">
+          <div className="field">
             <span>Upload CSV</span>
-            <input ref={fileInputRef} accept=".csv,.txt" onChange={handleCsvChange} type="file" />
-            <span className="segmented-control" role="radiogroup" aria-label="CSV import mode">
-              <label>
-                <input
-                  checked={csvImportMode === "replace"}
-                  name="csv-import-mode"
-                  onChange={() => setCsvImportMode("replace")}
-                  type="radio"
-                />
-                Replace list
-              </label>
-              <label>
-                <input
-                  checked={csvImportMode === "add"}
-                  name="csv-import-mode"
-                  onChange={() => setCsvImportMode("add")}
-                  type="radio"
-                />
-                Add to existing list
-              </label>
-            </span>
-          </label>
+            <div className="csv-upload-row">
+              <input ref={fileInputRef} accept=".csv,.txt" onChange={handleCsvChange} type="file" />
+              <span className="csv-mode-options" role="radiogroup" aria-label="CSV import mode">
+                <label>
+                  <input
+                    checked={csvImportMode === "replace"}
+                    name="csv-import-mode"
+                    onChange={() => setCsvImportMode("replace")}
+                    type="radio"
+                  />
+                  Replace
+                </label>
+                <label>
+                  <input
+                    checked={csvImportMode === "add"}
+                    name="csv-import-mode"
+                    onChange={() => setCsvImportMode("add")}
+                    type="radio"
+                  />
+                  Add to existing
+                </label>
+              </span>
+            </div>
+          </div>
           <label className="field">
             <span>Paste email addresses</span>
             <textarea
