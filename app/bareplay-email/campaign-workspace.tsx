@@ -12,6 +12,8 @@ type Props = {
 };
 
 type DraftContact = CampaignContact & {
+  source: "csv" | "typed";
+  sourceIndex: number;
   status: "ready" | "duplicate" | "suppressed";
 };
 
@@ -146,7 +148,12 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
   const suppressionsSet = useMemo(() => new Set(suppressions), [suppressions]);
   const contacts = useMemo(() => {
     const seen = new Set<string>();
-    return [...csvContacts, ...typedContacts].map<DraftContact>((contact) => {
+    const draftContacts: Omit<DraftContact, "status">[] = [
+      ...csvContacts.map((contact, sourceIndex) => ({ ...contact, source: "csv" as const, sourceIndex })),
+      ...typedContacts.map((contact, sourceIndex) => ({ ...contact, source: "typed" as const, sourceIndex })),
+    ];
+
+    return draftContacts.map<DraftContact>((contact) => {
       if (suppressionsSet.has(contact.email)) {
         return { ...contact, status: "suppressed" };
       }
@@ -243,6 +250,19 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
       fileInputRef.current.value = "";
     }
     await saveSetup(draft, [], [], "");
+  }
+
+  function handleContactEdit(source: DraftContact["source"], sourceIndex: number, field: keyof CampaignContact, value: string) {
+    const nextValue = field === "email" ? value.trim().toLowerCase() : value;
+    const updateContact = (contact: CampaignContact, index: number) =>
+      index === sourceIndex ? { ...contact, [field]: nextValue } : contact;
+
+    if (source === "csv") {
+      setCsvContacts((current) => current.map(updateContact));
+    } else {
+      setTypedContacts((current) => current.map(updateContact));
+    }
+    setSaveStatus("Recipient updated. Save setup when you're ready.");
   }
 
   const visibleRows = contacts.slice(0, 300);
@@ -395,9 +415,23 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
               <tbody>
                 {visibleRows.length ? (
                   visibleRows.map((contact) => (
-                    <tr key={`${contact.email}-${contact.status}`}>
-                      <td>{contact.email}</td>
-                      <td>{contact.name || defaultContactName}</td>
+                    <tr key={`${contact.source}-${contact.sourceIndex}`}>
+                      <td>
+                        <input
+                          aria-label="Recipient email"
+                          className="recipient-edit-input"
+                          onChange={(event) => handleContactEdit(contact.source, contact.sourceIndex, "email", event.target.value)}
+                          value={contact.email}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          aria-label="Recipient name"
+                          className="recipient-edit-input"
+                          onChange={(event) => handleContactEdit(contact.source, contact.sourceIndex, "name", event.target.value)}
+                          value={contact.name || ""}
+                        />
+                      </td>
                       <td>
                         <span className={`status-chip ${contact.status}`}>{contact.status}</span>
                       </td>

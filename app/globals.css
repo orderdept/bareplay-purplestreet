@@ -647,6 +647,28 @@ h1 {
   padding: 10px 14px 14px;
 }
 
+.recipient-edit-input {
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  min-height: 38px;
+  padding: 8px 10px;
+  width: 100%;
+}
+
+.recipient-edit-input:focus {
+  background: var(--panel-soft);
+  border-color: var(--accent);
+  outline: none;
+}
+
+.recipient-edit-input:hover {
+  border-color: var(--line-strong);
+}
+
 .data-table {
   border-collapse: collapse;
   width: 100%;
