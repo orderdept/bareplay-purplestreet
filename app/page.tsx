@@ -22,7 +22,19 @@ export default function HomePage() {
           <div className="module-row">
             <div>
               <p className="section-step">Panel</p>
-              <h2>BarePlay Email</h2>
+              <h2>Purple Prices Email</h2>
+            </div>
+            <Link className="action-link" href="https://ppemail.purplestreet.com/purple-prices-email">
+              Open panel
+            </Link>
+          </div>
+        </article>
+
+        <article className="panel wide">
+          <div className="module-row">
+            <div>
+              <p className="section-step">Panel</p>
+              <h2>BarePlay</h2>
             </div>
             <Link className="action-link" href="/bareplay-email">
               Open panel
