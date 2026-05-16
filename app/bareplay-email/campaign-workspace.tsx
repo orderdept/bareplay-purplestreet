@@ -265,6 +265,13 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
     setSaveStatus("Recipient updated. Save setup when you're ready.");
   }
 
+  async function handleContactEditBlur() {
+    await saveSetup(draft, csvContacts, typedContacts, pasteText, () => {
+      setSaveStatus("Recipient edit saved to BarePlay.");
+    });
+  }
+
+
   const visibleRows = contacts.slice(0, 300);
 
   useEffect(() => {
@@ -420,6 +427,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
                         <input
                           aria-label="Recipient email"
                           className="recipient-edit-input"
+                          onBlur={() => void handleContactEditBlur()}
                           onChange={(event) => handleContactEdit(contact.source, contact.sourceIndex, "email", event.target.value)}
                           value={contact.email}
                         />
@@ -428,6 +436,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
                         <input
                           aria-label="Recipient name"
                           className="recipient-edit-input"
+                          onBlur={() => void handleContactEditBlur()}
                           onChange={(event) => handleContactEdit(contact.source, contact.sourceIndex, "name", event.target.value)}
                           value={contact.name || ""}
                         />
