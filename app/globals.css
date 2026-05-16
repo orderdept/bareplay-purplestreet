@@ -481,7 +481,7 @@ h1 {
   align-items: center;
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 18px;
 }
 
 .csv-mode-options label {
