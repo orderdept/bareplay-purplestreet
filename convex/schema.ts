@@ -36,6 +36,7 @@ export default defineSchema({
 
   campaigns: defineTable({
     moduleKey: v.string(),
+    createdAt: v.optional(v.string()),
     status: v.union(
       v.literal("draft"),
       v.literal("queued"),
@@ -54,6 +55,24 @@ export default defineSchema({
     intervalMs: v.number(),
     currentBatch: v.number(),
     totalBatches: v.number(),
+    recentFailures: v.optional(
+      v.array(
+        v.object({
+          email: v.string(),
+          error: v.optional(v.string()),
+          name: v.optional(v.string()),
+          recordedAt: v.optional(v.string()),
+          status: v.union(v.literal("sent"), v.literal("failed")),
+        }),
+      ),
+    ),
+    recentLog: v.optional(v.array(v.string())),
+    smtp: v.optional(
+      v.object({
+        fromName: v.optional(v.string()),
+        username: v.optional(v.string()),
+      }),
+    ),
     nextRunAt: v.optional(v.string()),
     completedAt: v.optional(v.string()),
     updatedAt: v.string(),

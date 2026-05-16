@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import { getConvexCampaignDraft, getConvexSuppressions, getConvexTemplates } from "./convex-server";
+import { getConvexCampaignDraft, getConvexCampaigns, getConvexSuppressions, getConvexTemplates } from "./convex-server";
 import { type CampaignDraft, type SavedTemplate } from "./bareplay-types";
 
 type CampaignResult = {
@@ -147,14 +147,16 @@ function summarizeDraft(draft: CampaignDraft, suppressions: string[]): DraftSnap
 }
 
 export async function getBarePlayData() {
-  const [fileSuppressions, fileTemplates, campaignSummary, liveSuppressions, liveDraft] = await Promise.all([
+  const [fileSuppressions, fileTemplates, campaignSummary, liveSuppressions, liveCampaigns, liveDraft] = await Promise.all([
     readJson<string[]>("suppressions.json"),
     readJson<SavedTemplate[]>("templates.json"),
     readJson<CampaignSummary>("campaign-summary.json"),
     getConvexSuppressions(),
+    getConvexCampaigns(),
     getConvexCampaignDraft(),
   ]);
-  const latestCampaign = campaignSummary.latestCampaign || null;
+  const convexCampaigns = sortNewest(liveCampaigns || []);
+  const latestCampaign = convexCampaigns[0] || campaignSummary.latestCampaign || null;
   const draft = liveDraft || draftFromCampaign(latestCampaign);
   const liveTemplates = await getConvexTemplates(draft.campaignName);
   const suppressions =
@@ -180,7 +182,9 @@ export async function getBarePlayData() {
     draft,
     suppressions,
     templates,
-    campaigns: campaignSummary.campaignHistory || [],
+    campaigns: convexCampaigns.length
+      ? convexCampaigns
+      : campaignSummary.campaignHistory || [],
     recentLog,
     recentFailures,
     suppressionDownloads: {

@@ -3,13 +3,15 @@
 import { useState } from "react";
 
 type Props = {
+  readyCount: number;
   smtpPassword: string;
   templateName?: string | null;
 };
 
-export function HostedSendActions({ smtpPassword, templateName }: Props) {
+export function HostedSendActions({ readyCount, smtpPassword, templateName }: Props) {
   const [isTestingLogin, setIsTestingLogin] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
+  const [isSendingCampaign, setIsSendingCampaign] = useState(false);
   const [message, setMessage] = useState(
     templateName
       ? `Send Test will use the saved message template: ${templateName}.`
@@ -17,11 +19,13 @@ export function HostedSendActions({ smtpPassword, templateName }: Props) {
   );
   const [isError, setIsError] = useState(false);
 
-  async function runAction(path: string, kind: "login" | "send") {
+  async function runAction(path: string, kind: "login" | "send" | "campaign") {
     if (kind === "login") {
       setIsTestingLogin(true);
-    } else {
+    } else if (kind === "send") {
       setIsSendingTest(true);
+    } else {
+      setIsSendingCampaign(true);
     }
     setIsError(false);
     try {
@@ -41,10 +45,18 @@ export function HostedSendActions({ smtpPassword, templateName }: Props) {
     } finally {
       if (kind === "login") {
         setIsTestingLogin(false);
-      } else {
+      } else if (kind === "send") {
         setIsSendingTest(false);
+      } else {
+        setIsSendingCampaign(false);
       }
     }
+  }
+
+  function startCampaign() {
+    const ok = window.confirm(`Start the campaign now and send to ${readyCount} ready recipient${readyCount === 1 ? "" : "s"}?`);
+    if (!ok) return;
+    void runAction("/api/bareplay/send-campaign", "campaign");
   }
 
   return (
@@ -65,6 +77,14 @@ export function HostedSendActions({ smtpPassword, templateName }: Props) {
           type="button"
         >
           {isSendingTest ? "Sending test..." : "Send live test"}
+        </button>
+        <button
+          className="action-button"
+          disabled={isSendingCampaign || !templateName || !smtpPassword.trim() || readyCount < 1}
+          onClick={startCampaign}
+          type="button"
+        >
+          {isSendingCampaign ? "Sending campaign..." : "Start campaign"}
         </button>
       </div>
       <p className={`inline-status ${isError ? "error-text" : ""}`}>{message}</p>

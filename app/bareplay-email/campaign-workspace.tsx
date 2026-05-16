@@ -544,7 +544,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
             </div>
           </div>
 
-          <HostedSendActions smtpPassword={smtpPassword} templateName={templateName} />
+          <HostedSendActions readyCount={counts.ready} smtpPassword={smtpPassword} templateName={templateName} />
           <p className="quiet-note">
             Use the login check first if anything looks off, then send a live test before the full campaign run.
           </p>

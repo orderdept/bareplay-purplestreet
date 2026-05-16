@@ -59,6 +59,69 @@ export async function addConvexSuppression(
   });
 }
 
+export async function getConvexCampaigns() {
+  const client = getConvexClient();
+  if (!client) {
+    return null;
+  }
+  const rows = await client.query(api.campaigns.listCampaigns, { moduleKey });
+  return rows.map((row) => ({
+    completedAt: row.completedAt,
+    createdAt: row.createdAt,
+    currentBatch: row.currentBatch,
+    dailyLimit: row.dailyLimit,
+    failed: row.failedCount,
+    id: String(row._id),
+    intervalMs: row.intervalMs,
+    nextRunAt: row.nextRunAt,
+    recentFailures: row.recentFailures,
+    recentLog: row.recentLog,
+    sent: row.sentCount,
+    smtp: row.smtp,
+    status: row.status,
+    subject: row.subject,
+    total: row.totalRecipients,
+    totalBatches: row.totalBatches,
+  }));
+}
+
+export async function recordConvexCompletedCampaign(args: {
+  dailyLimit: number;
+  duplicateCount: number;
+  failedCount: number;
+  fromName: string;
+  intervalMs: number;
+  recentFailures: Array<{ email: string; error?: string; name?: string; recordedAt?: string; status: "sent" | "failed" }>;
+  recentLog: string[];
+  sentCount: number;
+  subject: string;
+  suppressedCount: number;
+  totalRecipients: number;
+  username: string;
+}) {
+  const client = getConvexClient();
+  if (!client) {
+    throw new Error("Convex is not configured.");
+  }
+  return await client.mutation(api.campaigns.recordCompleted, {
+    moduleKey,
+    subject: args.subject,
+    totalRecipients: args.totalRecipients,
+    sentCount: args.sentCount,
+    failedCount: args.failedCount,
+    suppressedCount: args.suppressedCount,
+    duplicateCount: args.duplicateCount,
+    dailyLimit: args.dailyLimit,
+    intervalMs: args.intervalMs,
+    recentFailures: args.recentFailures,
+    recentLog: args.recentLog,
+    smtp: {
+      fromName: args.fromName,
+      username: args.username,
+    },
+  });
+}
+
 export async function getConvexTemplates(campaignName: string) {
   const client = getConvexClient();
   if (!client) {

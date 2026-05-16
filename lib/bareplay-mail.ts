@@ -391,3 +391,58 @@ export async function sendHostedBarePlayTestEmail(
     from: config.username,
   };
 }
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function sendHostedBarePlayCampaign(
+  draft: CampaignDraft,
+  message: CampaignMessage,
+  recipients: MailRecipient[],
+  overrides: HostedCredentialOverrides = {},
+  intervalMs = 1000,
+) {
+  const config = hostedSmtpConfigFromDraft(draft, overrides);
+  const session = await SmtpSession.connect(config);
+  const results: Array<{ email: string; error?: string; name?: string; recordedAt: string; status: "sent" | "failed" }> = [];
+  try {
+    if (config.security === "ssl") {
+      await session.command(`EHLO ${config.host}`, [250]);
+    }
+    await session.authLogin(config.username, config.password);
+
+    for (let index = 0; index < recipients.length; index += 1) {
+      const recipient = recipients[index];
+      try {
+        await session.sendMail(config, message, recipient);
+        results.push({
+          email: recipient.email,
+          name: recipient.name,
+          recordedAt: new Date().toISOString(),
+          status: "sent",
+        });
+      } catch (error) {
+        results.push({
+          email: recipient.email,
+          error: error instanceof Error ? error.message : "Delivery failed.",
+          name: recipient.name,
+          recordedAt: new Date().toISOString(),
+          status: "failed",
+        });
+      }
+
+      if (index < recipients.length - 1) {
+        await sleep(Math.max(1000, intervalMs));
+      }
+    }
+  } finally {
+    await session.quit();
+  }
+
+  return {
+    from: config.username,
+    fromName: config.fromName,
+    results,
+  };
+}
