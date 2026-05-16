@@ -137,6 +137,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
   const [pasteText, setPasteText] = useState(initialDraft.pasteText);
   const [smtpPassword, setSmtpPassword] = useState("");
   const [saveStatus, setSaveStatus] = useState("Save your audience and delivery settings so the campaign is ready when you come back.");
+  const [deliveryStatus, setDeliveryStatus] = useState("Add the mailbox password, then run the sender login check.");
   const [saving, setSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -170,9 +171,15 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
     };
   }, [contacts, draft]);
 
-  async function saveSetup(nextDraft = draft, nextCsvContacts = csvContacts, nextTypedContacts = typedContacts, nextPasteText = pasteText) {
+  async function saveSetup(
+    nextDraft = draft,
+    nextCsvContacts = csvContacts,
+    nextTypedContacts = typedContacts,
+    nextPasteText = pasteText,
+    setStatus: (message: string) => void = setSaveStatus,
+  ) {
     setSaving(true);
-    setSaveStatus("Saving the campaign setup...");
+    setStatus("Saving the campaign setup...");
     try {
       const response = await fetch("/api/bareplay/campaign-draft", {
         method: "POST",
@@ -194,12 +201,22 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
       if (!response.ok) {
         throw new Error(data.error || "Could not save the campaign setup.");
       }
-      setSaveStatus(`Saved ${data.contactCount || 0} contacts to Purplestreet.`);
+      setStatus(`Saved ${data.contactCount || 0} contacts to Purplestreet.`);
     } catch (error) {
-      setSaveStatus(error instanceof Error ? error.message : "Could not save the campaign setup.");
+      setStatus(error instanceof Error ? error.message : "Could not save the campaign setup.");
     } finally {
       setSaving(false);
     }
+  }
+
+  async function saveDeliverySettings() {
+    await saveSetup(draft, csvContacts, typedContacts, pasteText, (message) => {
+      setDeliveryStatus(
+        smtpPassword.trim()
+          ? `${message} Password is ready for login/test in this browser session.`
+          : `${message} Add the mailbox password before checking login.`,
+      );
+    });
   }
 
   async function handleCsvChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -372,6 +389,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
                 type="password"
                 value={smtpPassword}
               />
+              <small>Used for login/test in this browser session.</small>
             </label>
             <label className="field">
               <span>From name</span>
@@ -417,10 +435,11 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
           </div>
 
           <div className="button-row">
-            <button className="action-link button-like" disabled={saving} onClick={() => void saveSetup()} type="button">
+            <button className="action-link button-like" disabled={saving} onClick={() => void saveDeliverySettings()} type="button">
               Save settings
             </button>
           </div>
+          <p className="inline-status">{deliveryStatus}</p>
         </article>
 
         <article className="panel">
