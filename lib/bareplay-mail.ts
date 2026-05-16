@@ -246,9 +246,19 @@ class SmtpSession {
   }
 
   async authLogin(username: string, password: string) {
-    await this.command("AUTH LOGIN", [334]);
-    await this.command(base64(username), [334]);
-    await this.command(base64(password), [235]);
+    try {
+      await this.command("AUTH LOGIN", [334]);
+      await this.command(base64(username), [334]);
+      await this.command(base64(password), [235]);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (/535|auth|login|password/i.test(message)) {
+        throw new Error(
+          `SMTP authentication failed for ${username}. Check that Sender email is the mailbox you are logging into and that the password matches that mailbox.`,
+        );
+      }
+      throw error;
+    }
   }
 
   async sendMail(config: HostedSmtpConfig, message: CampaignMessage, contact: MailRecipient) {
@@ -276,9 +286,9 @@ export function hostedSmtpConfigFromDraft(
   overrides: HostedCredentialOverrides = {},
 ): HostedSmtpConfig {
   const username =
+    draft.smtpUsername.trim().toLowerCase() ||
     process.env.BAREPLAY_EMAIL_SMTP_USERNAME?.trim().toLowerCase() ||
-    process.env.BAREPLAY_EMAIL_IMAP_USERNAME?.trim().toLowerCase() ||
-    draft.smtpUsername.trim().toLowerCase();
+    process.env.BAREPLAY_EMAIL_IMAP_USERNAME?.trim().toLowerCase();
   const password =
     overrides.password?.trim() ||
     process.env.BAREPLAY_EMAIL_SMTP_PASSWORD ||
