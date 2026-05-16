@@ -493,12 +493,18 @@ h1 {
   white-space: nowrap;
 }
 
-.csv-mode-options input {
+.field .csv-mode-options input[type="checkbox"] {
   accent-color: var(--accent);
-  height: auto;
+  appearance: auto;
+  background: initial;
+  border: initial;
+  border-radius: initial;
+  color: initial;
+  font: initial;
+  height: 16px;
   margin: 0;
   padding: 0;
-  width: auto;
+  width: 16px;
 }
 
 .csv-mode-options label:has(input:checked) {

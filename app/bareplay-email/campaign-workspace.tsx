@@ -394,21 +394,21 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
               <span className="csv-mode-options" role="radiogroup" aria-label="CSV import mode">
                 <label>
                   <input
-                    checked={csvImportMode === "replace"}
-                    name="csv-import-mode"
-                    onChange={() => setCsvImportMode("replace")}
-                    type="radio"
-                  />
-                  Replace
-                </label>
+                  checked={csvImportMode === "replace"}
+                  name="csv-import-mode"
+                  onChange={() => setCsvImportMode("replace")}
+                  type="checkbox"
+                />
+                Replace
+              </label>
                 <label>
                   <input
-                    checked={csvImportMode === "add"}
-                    name="csv-import-mode"
-                    onChange={() => setCsvImportMode("add")}
-                    type="radio"
-                  />
-                  Add to existing
+                  checked={csvImportMode === "add"}
+                  name="csv-import-mode"
+                  onChange={() => setCsvImportMode("add")}
+                  type="checkbox"
+                />
+                Add to existing
                 </label>
               </span>
             </div>
