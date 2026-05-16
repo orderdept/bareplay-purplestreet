@@ -45,21 +45,62 @@ function htmlEscape(value: string) {
     .replaceAll('"', "&quot;");
 }
 
+function safeHref(value: string) {
+  const trimmed = value.trim();
+  if (/^(https?:\/\/|mailto:)/i.test(trimmed)) {
+    return htmlEscape(trimmed);
+  }
+  return "";
+}
+
+function inlineMarkup(value: string) {
+  const escaped = htmlEscape(value);
+  return escaped.replace(
+    /\[([^\]]+)\]\(([^)\s]+)\)/g,
+    (match, label: string, href: string) => {
+      const safe = safeHref(href);
+      if (!safe) return match;
+      return `<a href="${safe}" style="color:#7c33b6;text-decoration:underline;">${label}</a>`;
+    },
+  );
+}
+
+function isBulletLine(value: string) {
+  return /^\s*[-*]\s+/.test(value);
+}
+
 function htmlParagraphs(text: string) {
   return String(text || "")
     .trim()
     .split(/\n\s*\n+/)
     .filter(Boolean)
     .map((block) => {
+      const blockLines = block
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+
+      if (blockLines.length && blockLines.every(isBulletLine)) {
+        const items = blockLines
+          .map((line) => line.replace(/^\s*[-*]\s+/, ""))
+          .map((line) => `<li style="margin:0 0 6px 0;">${inlineMarkup(line)}</li>`)
+          .join("");
+        return `<ul style="margin:0 0 14px 22px;padding:0;">${items}</ul>`;
+      }
+
       const lines = block
         .split(/\r?\n/)
         .map((line) => line.trim())
         .filter(Boolean)
-        .map((line) => htmlEscape(line))
+        .map((line) => inlineMarkup(line))
         .join("<br />");
       return `<p style="margin:0 0 14px 0;">${lines}</p>`;
     })
     .join("");
+}
+
+function textMarkup(value: string) {
+  return value.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, "$1 ($2)");
 }
 
 function buildHtmlBody(message: CampaignMessage, contact: MailRecipient) {
@@ -89,7 +130,7 @@ function buildHtmlBody(message: CampaignMessage, contact: MailRecipient) {
 
 function buildTextBody(message: CampaignMessage, contact: MailRecipient) {
   return [
-    personalize(message.body, contact).trim(),
+    textMarkup(personalize(message.body, contact)).trim(),
     "",
     "You are receiving this because you are on the BarePlay customer list.",
     "",

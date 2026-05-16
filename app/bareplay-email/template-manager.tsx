@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { type CampaignDraft, type SavedTemplate } from "../../lib/bareplay-types";
@@ -47,6 +47,7 @@ export function TemplateManager({ draft, templates }: Props) {
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPersistingDraft, setIsPersistingDraft] = useState(false);
+  const bodyRef = useRef<HTMLTextAreaElement | null>(null);
   const selectedTemplate = sortedTemplates.find((template) => template.name === selectedName) || null;
 
   useEffect(() => {
@@ -200,6 +201,46 @@ export function TemplateManager({ draft, templates }: Props) {
     });
   }
 
+  function updateBodyWithSelection(nextValue: string, nextStart: number, nextEnd = nextStart) {
+    setBody(nextValue);
+    window.requestAnimationFrame(() => {
+      bodyRef.current?.focus();
+      bodyRef.current?.setSelectionRange(nextStart, nextEnd);
+    });
+    void persistDraftMessage({ body: nextValue });
+  }
+
+  function insertBullets() {
+    const textarea = bodyRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = body.slice(start, end);
+    const source = selected || "First point\nSecond point";
+    const bulleted = source
+      .split(/\r?\n/)
+      .map((line) => {
+        const trimmed = line.trim();
+        return trimmed ? `- ${trimmed.replace(/^\s*[-*]\s+/, "")}` : "";
+      })
+      .join("\n");
+    const nextBody = `${body.slice(0, start)}${bulleted}${body.slice(end)}`;
+    updateBodyWithSelection(nextBody, start, start + bulleted.length);
+  }
+
+  function insertLink() {
+    const textarea = bodyRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = body.slice(start, end).trim() || "link text";
+    const url = window.prompt("Paste the link URL", "https://");
+    if (!url) return;
+    const linkText = `[${selected}](${url.trim()})`;
+    const nextBody = `${body.slice(0, start)}${linkText}${body.slice(end)}`;
+    updateBodyWithSelection(nextBody, start + 1, start + 1 + selected.length);
+  }
+
   return (
     <article className="panel wide">
       <div className="section-head host-section-head">
@@ -293,8 +334,19 @@ export function TemplateManager({ draft, templates }: Props) {
           />
         </label>
         <label className="field full">
-          <span>Campaign message</span>
+          <div className="composer-label-row">
+            <span>Campaign message</span>
+            <div className="composer-tools" aria-label="Message formatting tools">
+              <button className="action-link ghost button-like compact-action" onClick={insertBullets} type="button">
+                Bullets
+              </button>
+              <button className="action-link ghost button-like compact-action" onClick={insertLink} type="button">
+                Link
+              </button>
+            </div>
+          </div>
           <textarea
+            ref={bodyRef}
             rows={14}
             value={body}
             onChange={(event) => setBody(event.target.value)}

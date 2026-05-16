@@ -359,6 +359,12 @@ h1 {
   color: var(--accent);
 }
 
+.compact-action {
+  font-size: 0.82rem;
+  min-height: 34px;
+  padding: 0 10px;
+}
+
 .button-like {
   cursor: pointer;
 }
@@ -456,6 +462,22 @@ h1 {
 
 .field.full {
   grid-column: 1 / -1;
+}
+
+.composer-label-row {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.composer-label-row span {
+  margin-bottom: 0;
+}
+
+.composer-tools {
+  display: flex;
+  gap: 8px;
 }
 
 .template-actions {
