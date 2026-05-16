@@ -147,24 +147,24 @@ function summarizeDraft(draft: CampaignDraft, suppressions: string[]): DraftSnap
 }
 
 export async function getBarePlayData() {
-  const [fileSuppressions, fileTemplates, campaignSummary, liveSuppressions, liveTemplates, liveDraft] = await Promise.all([
+  const [fileSuppressions, fileTemplates, campaignSummary, liveSuppressions, liveDraft] = await Promise.all([
     readJson<string[]>("suppressions.json"),
     readJson<SavedTemplate[]>("templates.json"),
     readJson<CampaignSummary>("campaign-summary.json"),
     getConvexSuppressions(),
-    getConvexTemplates(),
     getConvexCampaignDraft(),
   ]);
+  const latestCampaign = campaignSummary.latestCampaign || null;
+  const draft = liveDraft || draftFromCampaign(latestCampaign);
+  const liveTemplates = await getConvexTemplates(draft.campaignName);
   const suppressions =
     liveSuppressions && liveSuppressions.length > 0
       ? liveSuppressions.map((row) => row.email).sort((left, right) => left.localeCompare(right))
       : fileSuppressions;
-  const templates = liveTemplates && liveTemplates.length > 0 ? liveTemplates : fileTemplates;
-  const latestCampaign = campaignSummary.latestCampaign || null;
+  const templates = liveTemplates === null ? fileTemplates : liveTemplates;
   const latestTemplate = sortNewest(templates as Array<SavedTemplate & { createdAt?: string }>)[0] || null;
   const recentLog = [...(latestCampaign?.recentLog || [])].reverse();
   const recentFailures = [...(latestCampaign?.recentFailures || [])].reverse();
-  const draft = liveDraft || draftFromCampaign(latestCampaign);
   const currentDraftCampaign = summarizeDraft(draft, suppressions);
 
   return {

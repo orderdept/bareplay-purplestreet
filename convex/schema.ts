@@ -76,13 +76,16 @@ export default defineSchema({
 
   templates: defineTable({
     moduleKey: v.string(),
+    campaignName: v.optional(v.string()),
     name: v.string(),
     subject: v.string(),
     previewText: v.string(),
     body: v.string(),
     mailingAddress: v.string(),
     updatedAt: v.string(),
-  }).index("by_module", ["moduleKey"]),
+  })
+    .index("by_module", ["moduleKey"])
+    .index("by_module_campaign", ["moduleKey", "campaignName"]),
 
   modules: defineTable({
     key: v.string(),

@@ -41,8 +41,8 @@ export function TemplateManager({ draft, templates }: Props) {
   const [mailingAddress, setMailingAddress] = useState(draft.messageMailingAddress || "");
   const [status, setStatus] = useState(
     sortedTemplates.length
-      ? "Choose a saved message or save your edits."
-      : "No saved messages yet.",
+      ? "Choose a saved message for this campaign or save your edits."
+      : "No saved messages yet for this campaign.",
   );
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -130,6 +130,7 @@ export function TemplateManager({ draft, templates }: Props) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          campaignName: draft.campaignName,
           name,
           message: { subject, previewText, body, mailingAddress },
         }),
@@ -159,7 +160,7 @@ export function TemplateManager({ draft, templates }: Props) {
     setStatus(`Deleting "${name}"...`);
     try {
       const response = await fetch(
-        `/api/bareplay/templates?name=${encodeURIComponent(name)}`,
+        `/api/bareplay/templates?campaignName=${encodeURIComponent(draft.campaignName)}&name=${encodeURIComponent(name)}`,
         { method: "DELETE" },
       );
       const data = (await response.json()) as { error?: string; deleted?: boolean };

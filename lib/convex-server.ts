@@ -59,12 +59,12 @@ export async function addConvexSuppression(
   });
 }
 
-export async function getConvexTemplates() {
+export async function getConvexTemplates(campaignName: string) {
   const client = getConvexClient();
   if (!client) {
     return null;
   }
-  const rows = await client.query(api.templates.listByModule, { moduleKey });
+  const rows = await client.query(api.templates.listByModule, { moduleKey, campaignName: campaignName.trim() });
   return rows.map<SavedTemplate>((row) => ({
     id: String(row._id),
     name: row.name,
@@ -109,25 +109,27 @@ export async function getConvexCampaignDraft() {
   } satisfies CampaignDraft;
 }
 
-export async function upsertConvexTemplate(name: string, message: CampaignMessage) {
+export async function upsertConvexTemplate(campaignName: string, name: string, message: CampaignMessage) {
   const client = getConvexClient();
   if (!client) {
     throw new Error("Convex is not configured.");
   }
   return await client.mutation(api.templates.upsertForModule, {
     moduleKey,
+    campaignName: campaignName.trim(),
     name,
     ...message,
   });
 }
 
-export async function deleteConvexTemplate(name: string) {
+export async function deleteConvexTemplate(campaignName: string, name: string) {
   const client = getConvexClient();
   if (!client) {
     throw new Error("Convex is not configured.");
   }
   return await client.mutation(api.templates.deleteForModule, {
     moduleKey,
+    campaignName: campaignName.trim(),
     name,
   });
 }
