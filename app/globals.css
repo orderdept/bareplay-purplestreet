@@ -435,14 +435,8 @@ h1 {
   resize: vertical;
 }
 
-.password-keychain-row {
-  align-items: center;
-  display: grid;
-  gap: 10px;
-  grid-template-columns: minmax(0, 1fr) auto;
-}
-
-.password-keychain-row .action-link {
+.keychain-field .action-link {
+  justify-self: start;
   min-height: 46px;
 }
 
@@ -608,7 +602,6 @@ h1 {
   .host-form-grid,
   .page-top,
   .module-row,
-  .password-keychain-row,
   .section-head {
     grid-template-columns: 1fr;
     flex-direction: column;

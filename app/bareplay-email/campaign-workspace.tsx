@@ -449,21 +449,19 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
             </label>
             <label className="field">
               <span>Email password</span>
-              <div className="password-keychain-row">
-                <input
-                  autoComplete="current-password"
-                  onChange={(event) => setSmtpPassword(event.target.value)}
-                  type="password"
-                  value={smtpPassword}
-                />
-                <button className="action-link ghost button-like" onClick={() => void savePasswordToKeychain()} type="button">
-                  Save to Mac Keychain
-                </button>
-              </div>
+              <input
+                autoComplete="current-password"
+                onChange={(event) => setSmtpPassword(event.target.value)}
+                type="password"
+                value={smtpPassword}
+              />
               <small>Used for login/test in this browser session. A saved Mac Keychain password loads automatically.</small>
             </label>
-            <div className="field">
+            <div className="field keychain-field">
               <span>Mac Keychain</span>
+              <button className="action-link ghost button-like" onClick={() => void savePasswordToKeychain()} type="button">
+                Save to Mac Keychain
+              </button>
               <small>{keychainStatus}</small>
             </div>
             <label className="field">
