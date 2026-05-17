@@ -26,10 +26,15 @@ export default async function BarePlayEmailPage() {
   );
 
   return (
-    <main className="shell">
+    <main className="shell bareplay-panel">
       <div className="page-top">
-        <div>
-          <p className="eyebrow">Purplestreet / Campaign Control</p>
+        <div className="bareplay-title-block">
+          <img
+            alt="Bare Play"
+            className="bareplay-logo"
+            src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=crop/GEZf6CK9JsfiHJQX/bare-play-logo-v5_use-this-one-X2sjRAKnvHC7MYFb.png"
+          />
+          <p className="eyebrow">BarePlay / Campaign Control</p>
           <h1>BarePlay Email</h1>
           <p className="lede">
             Plan a campaign, keep the audience clean, test delivery, and keep a

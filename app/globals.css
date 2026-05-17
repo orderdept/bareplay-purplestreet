@@ -1,3 +1,5 @@
+@import url("https://cdn.zyrosite.com/u1/google-fonts/font-faces?family=Outfit:wght@400;600&family=Inter:wght@400;500&display=swap");
+
 :root {
   --bg: #f6f2f7;
   --panel: #ffffff;
@@ -749,6 +751,217 @@ h1 {
 
 .activity-list li + li {
   margin-top: 10px;
+}
+
+body:has(.bareplay-panel) {
+  background: #000;
+}
+
+.bareplay-panel {
+  --bg: #000000;
+  --panel: #111111;
+  --panel-soft: #1a1a1a;
+  --line: #313131;
+  --line-strong: #545454;
+  --text: #ffffff;
+  --muted: #c8c8c8;
+  --accent: #367cf6;
+  --accent-soft: #10244a;
+  --success-bg: #0f2717;
+  --success-line: #2f8a46;
+  --success-text: #78ff82;
+  --warning-bg: #2b210d;
+  --warning-line: #b88928;
+  --warning-text: #ffd27a;
+  --danger-bg: #321017;
+  --danger-line: #a63e52;
+  --danger-text: #ff8ca1;
+  --shadow: none;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.82), #000 360px),
+    radial-gradient(circle at 20% 0%, rgba(54, 124, 246, 0.22), transparent 34%),
+    #000;
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+  max-width: none;
+  min-height: 100vh;
+  padding-left: max(24px, calc((100vw - 1224px) / 2));
+  padding-right: max(24px, calc((100vw - 1224px) / 2));
+}
+
+.bareplay-panel h1,
+.bareplay-panel h2,
+.bareplay-panel h3,
+.bareplay-panel .hero-inline-meta {
+  font-family: Outfit, Inter, system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.bareplay-panel h1 {
+  color: #ffffff;
+  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  line-height: 0.96;
+  margin-bottom: 14px;
+}
+
+.bareplay-panel .page-top {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 28px;
+  padding-bottom: 22px;
+}
+
+.bareplay-title-block {
+  max-width: 760px;
+}
+
+.bareplay-logo {
+  display: block;
+  height: auto;
+  margin-bottom: 18px;
+  max-width: 220px;
+  width: 38vw;
+}
+
+.bareplay-panel .eyebrow,
+.bareplay-panel .section-step,
+.bareplay-panel .hero-kicker {
+  color: #78ff82;
+  letter-spacing: 0.06em;
+}
+
+.bareplay-panel .lede,
+.bareplay-panel .panel p,
+.bareplay-panel .quiet-note,
+.bareplay-panel .template-status,
+.bareplay-panel .inline-status {
+  color: var(--muted);
+}
+
+.bareplay-panel .hero-band {
+  background:
+    linear-gradient(135deg, rgba(178, 58, 90, 0.22), rgba(54, 124, 246, 0.12)),
+    #0b0b0b;
+  border-color: var(--line);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+}
+
+.bareplay-panel .hero-progress-track {
+  background: #2a2a2a;
+}
+
+.bareplay-panel .hero-progress-fill {
+  background: linear-gradient(90deg, #367cf6, #78ff82);
+}
+
+.bareplay-panel .panel,
+.bareplay-panel .stat-card,
+.bareplay-panel .detail-item,
+.bareplay-panel .hero-metric {
+  border-color: var(--line);
+  box-shadow: none;
+}
+
+.bareplay-panel .panel {
+  background: var(--panel);
+}
+
+.bareplay-panel .stat-card,
+.bareplay-panel .detail-item,
+.bareplay-panel .hero-metric,
+.bareplay-panel .workflow-summary-bar,
+.bareplay-panel .checklist-block,
+.bareplay-panel .recipient-panel,
+.bareplay-panel .suppression-match-list li {
+  background: var(--panel-soft);
+}
+
+.bareplay-panel .action-link,
+.bareplay-panel .action-button {
+  background: #367cf6;
+  border-color: #367cf6;
+  border-radius: 10px;
+  color: #ffffff;
+}
+
+.bareplay-panel .action-link:hover,
+.bareplay-panel .action-button:hover {
+  background: #78ff82;
+  border-color: #78ff82;
+  color: #000000;
+}
+
+.bareplay-panel .action-link.ghost,
+.bareplay-panel .subtle-link {
+  background: transparent;
+  border-color: var(--line-strong);
+  color: #ffffff;
+}
+
+.bareplay-panel .action-link.ghost:hover,
+.bareplay-panel .subtle-link:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #000000;
+}
+
+.bareplay-panel .field input:not([type="file"]):not([type="checkbox"]),
+.bareplay-panel .field select,
+.bareplay-panel .field textarea,
+.bareplay-panel .inline-input {
+  background: #f1f1f1;
+  border-color: #1a1a1a;
+  color: #1a1a1a;
+}
+
+.bareplay-panel .field input:not([type="file"]):not([type="checkbox"]):focus,
+.bareplay-panel .field select:focus,
+.bareplay-panel .field textarea:focus,
+.bareplay-panel .inline-input:focus {
+  border-color: #367cf6;
+  outline: 2px solid rgba(54, 124, 246, 0.24);
+}
+
+.bareplay-panel .composer-tools .compact-action,
+.bareplay-panel .csv-mode-options label {
+  color: #ffffff;
+}
+
+.bareplay-panel .field .csv-mode-options input[type="checkbox"] {
+  accent-color: #367cf6;
+}
+
+.bareplay-panel .status-pill {
+  background: var(--success-bg);
+  border-color: var(--success-line);
+  color: var(--success-text);
+}
+
+.bareplay-panel .email-pill {
+  background: #171717;
+  border-color: var(--line);
+  color: #ffffff;
+}
+
+.bareplay-panel .recipient-table-wrap {
+  background: #0d0d0d;
+}
+
+.bareplay-panel .recipient-edit-input {
+  color: #ffffff;
+}
+
+.bareplay-panel .recipient-edit-input:focus {
+  background: #161616;
+  border-color: #367cf6;
+}
+
+.bareplay-panel .data-table th {
+  color: #78ff82;
+}
+
+.bareplay-panel .data-table td {
+  color: #f3f3f3;
 }
 
 @media (max-width: 980px) {
