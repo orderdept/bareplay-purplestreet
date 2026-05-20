@@ -9,6 +9,7 @@ type Props = {
   draft: CampaignDraft;
   suppressions: string[];
   templateName?: string | null;
+  activePanel?: "audience" | "delivery" | "final";
 };
 
 type DraftContact = CampaignContact & {
@@ -68,7 +69,10 @@ function csvRows(text: string) {
 }
 
 function contactsFromCsv(text: string) {
-  const rows = csvRows(text);
+  return contactsFromRows(csvRows(text));
+}
+
+function contactsFromRows(rows: string[][]) {
   if (!rows.length) return [];
 
   const headers = rows[0].map((header) => header.toLowerCase().replace(/[^a-z0-9]+/g, "_"));
@@ -83,6 +87,20 @@ function contactsFromCsv(text: string) {
       return email ? { email, name: name || defaultContactName } : null;
     })
     .filter((item): item is CampaignContact => Boolean(item));
+}
+
+async function contactsFromSpreadsheetFile(file: File) {
+  const extension = file.name.split(".").pop()?.toLowerCase() || "";
+  if (extension === "xlsx" || extension === "xls") {
+    const XLSX = await import("xlsx");
+    const workbook = XLSX.read(await file.arrayBuffer(), { type: "array" });
+    const firstSheetName = workbook.SheetNames[0];
+    const firstSheet = firstSheetName ? workbook.Sheets[firstSheetName] : null;
+    if (!firstSheet) return [];
+    const rows = XLSX.utils.sheet_to_json<string[]>(firstSheet, { header: 1, blankrows: false });
+    return contactsFromRows(rows.map((row) => row.map((cell) => String(cell ?? "").trim())));
+  }
+  return contactsFromCsv(await file.text());
 }
 
 function contactsFromPaste(text: string) {
@@ -133,12 +151,12 @@ function formatDraftCompletion(readyCount: number, spacing: number) {
   return new Date(Date.now() + Math.max(0, readyCount - 1) * spacing).toLocaleString();
 }
 
-export function CampaignWorkspace({ draft: initialDraft, suppressions, templateName }: Props) {
+export function CampaignWorkspace({ draft: initialDraft, suppressions, templateName, activePanel = "audience" }: Props) {
   const [draft, setDraft] = useState<CampaignDraft>(initialDraft);
   const [csvContacts, setCsvContacts] = useState<CampaignContact[]>(initialDraft.csvContacts);
   const [typedContacts, setTypedContacts] = useState<CampaignContact[]>(initialDraft.typedContacts);
   const [pasteText, setPasteText] = useState(initialDraft.pasteText);
-  const [csvImportMode, setCsvImportMode] = useState<"replace" | "add">("replace");
+  const [csvImportMode, setCsvImportMode] = useState<"replace" | "add" | "campaign">("replace");
   const [smtpPassword, setSmtpPassword] = useState("");
   const [keychainStatus, setKeychainStatus] = useState("Checking Mac Keychain...");
   const [saveStatus, setSaveStatus] = useState("Save your audience and delivery settings so the campaign is ready when you come back.");
@@ -232,10 +250,14 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
   async function handleCsvChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
-    const importedContacts = contactsFromCsv(await file.text());
+    const importedContacts = await contactsFromSpreadsheetFile(file);
     const nextCsvContacts = csvImportMode === "add" ? [...csvContacts, ...importedContacts] : importedContacts;
+    const nextTypedContacts = csvImportMode === "campaign" ? [] : typedContacts;
+    const nextPasteText = csvImportMode === "campaign" ? "" : pasteText;
     setCsvContacts(nextCsvContacts);
-    await saveSetup(draft, nextCsvContacts, typedContacts, pasteText);
+    setTypedContacts(nextTypedContacts);
+    setPasteText(nextPasteText);
+    await saveSetup(draft, nextCsvContacts, nextTypedContacts, nextPasteText);
   }
 
   async function handlePasteChange(value: string) {
@@ -350,12 +372,13 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
 
   return (
     <section className="workflow-stack">
+      {activePanel === "audience" ? (
       <article className="panel wide">
         <div className="section-head">
           <div>
             <p className="section-step">Step 2</p>
             <h2>Build the audience</h2>
-            <p>Upload a CSV, paste addresses, or combine both. The list is cleaned as it comes in so you can see what is truly ready.</p>
+            <p>Upload a spreadsheet, paste addresses, or combine both. The list is cleaned as it comes in so you can see what is truly ready.</p>
           </div>
           <div className="button-row">
             <button className="action-link ghost button-like" disabled={saving} onClick={() => void saveSetup()} type="button">
@@ -388,7 +411,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
 
         <div className="host-form-grid">
           <div className="field">
-            <span>Upload CSV</span>
+            <span>Upload list file</span>
             <div className="csv-upload-row">
               <div className="csv-mode-options" role="radiogroup" aria-label="CSV import mode">
                 <label>
@@ -409,8 +432,18 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
                   />
                   Add to existing
                 </label>
+                <label>
+                  <input
+                    checked={csvImportMode === "campaign"}
+                    name="csv-import-mode"
+                    onChange={() => setCsvImportMode("campaign")}
+                    type="checkbox"
+                  />
+                  Use only this list for this campaign
+                </label>
               </div>
-              <input ref={fileInputRef} accept=".csv,.txt" onChange={handleCsvChange} type="file" />
+              <input ref={fileInputRef} accept=".csv,.txt,.xlsx,.xls" onChange={handleCsvChange} type="file" />
+              <small>Use only this list clears pasted addresses for this draft, but shared suppressions still apply.</small>
             </div>
           </div>
           <label className="field">
@@ -483,8 +516,9 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
           ) : null}
         </details>
       </article>
+      ) : null}
 
-      <div className="split-grid">
+      {activePanel === "delivery" ? (
         <article className="panel">
           <div className="section-head">
             <div>
@@ -602,7 +636,9 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
           </div>
           <p className="inline-status">{deliveryStatus}</p>
         </article>
+      ) : null}
 
+      {activePanel === "final" ? (
         <article className="panel">
           <div className="section-head">
             <div>
@@ -636,7 +672,7 @@ export function CampaignWorkspace({ draft: initialDraft, suppressions, templateN
             Use the login check first if anything looks off, then send a live test before the full campaign run.
           </p>
         </article>
-      </div>
+      ) : null}
     </section>
   );
 }

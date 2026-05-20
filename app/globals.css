@@ -238,6 +238,49 @@ h1 {
   margin-bottom: 16px;
 }
 
+.workflow-tabs-shell {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.workflow-tab-list {
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+}
+
+.workflow-tab {
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  min-height: 40px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.workflow-tab:hover {
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+
+.workflow-tab[aria-selected="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
 .campaign-desk {
   margin-bottom: 16px;
 }
@@ -962,6 +1005,26 @@ body:has(.bareplay-panel) {
 
 .bareplay-panel .data-table td {
   color: #f3f3f3;
+}
+
+.bareplay-panel .workflow-tab-list {
+  background: #0d0d0d;
+  border-color: var(--line);
+}
+
+.bareplay-panel .workflow-tab {
+  color: #c8c8c8;
+}
+
+.bareplay-panel .workflow-tab:hover {
+  border-color: #78ff82;
+  color: #ffffff;
+}
+
+.bareplay-panel .workflow-tab[aria-selected="true"] {
+  background: #367cf6;
+  border-color: #367cf6;
+  color: #ffffff;
 }
 
 @media (max-width: 980px) {
