@@ -39,7 +39,7 @@ export default async function BarePlayEmailPage() {
         </div>
         <div className="page-top-actions">
           <div className="status-pill">{campaign?.status || "Ready"}</div>
-          <Link className="action-link ghost subtle-link" href="/">
+          <Link className="action-link ghost subtle-link" href="https://purplestreet.com">
             Back to PS
           </Link>
         </div>
