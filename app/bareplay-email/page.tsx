@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import {
   compactNumber,
   formatDateTime,
@@ -22,100 +20,36 @@ export default async function BarePlayEmailPage() {
   );
 
   return (
-    <main className="shell bareplay-panel">
-      <div className="page-top">
-        <div className="bareplay-title-block">
-          <img
-            alt="Bare Play"
-            className="bareplay-logo"
-            src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,fit=crop/GEZf6CK9JsfiHJQX/bare-play-logo-v5_use-this-one-X2sjRAKnvHC7MYFb.png"
-          />
-          <p className="eyebrow">BarePlay / Campaign Control</p>
-          <h1>BarePlay Email</h1>
-          <p className="lede">
-            Plan a campaign, keep the audience clean, test delivery, and keep a
-            close eye on results from one place.
-          </p>
-        </div>
-        <div className="page-top-actions">
-          <div className="status-pill">{campaign?.status || "Ready"}</div>
-          <Link className="action-link ghost subtle-link" href="https://purplestreet.com">
-            Back to PS
-          </Link>
-        </div>
-      </div>
-
-      <section className="hero-band">
-        <div className="hero-band-copy">
-          <div className="hero-label-row">
-            <span className="hero-kicker">Current campaign</span>
-            <span className="hero-inline-meta">
-              {campaign?.subject || template?.message.subject || "No subject yet"}
-            </span>
-          </div>
-          <div className="hero-progress-row">
-            <div className="hero-progress-track" aria-hidden="true">
-              <span
-                className="hero-progress-fill"
-                style={{
-                  width: `${campaign?.total ? Math.min(100, (((campaign?.sent || 0) + (campaign?.failed || 0)) / campaign.total) * 100) : 0}%`,
-                }}
-              />
-            </div>
-            <strong className="hero-progress-caption">
-              {campaign?.total
-                ? `${compactNumber((campaign?.sent || 0) + (campaign?.failed || 0))} of ${compactNumber(campaign.total)} processed`
-                : "No campaign history yet"}
-            </strong>
-          </div>
-        </div>
-        <div className="hero-metrics">
-          <div className="hero-metric">
-            <span>Sender</span>
-            <strong>{data.senderName}</strong>
-            <small>{data.senderEmail}</small>
-          </div>
-          <div className="hero-metric">
-            <span>Completed</span>
-            <strong>{formatDateTime(campaign?.completedAt)}</strong>
-            <small>{campaign?.completedAt ? "Last finished run" : "Nothing sent yet"}</small>
-          </div>
-        </div>
-      </section>
-
-      <section className="stat-grid stat-grid-six">
-        <article className="stat-card">
-          <span>Campaign status</span>
-          <strong>{campaign?.status || "Ready"}</strong>
-        </article>
-        <article className="stat-card">
-          <span>Sent</span>
-          <strong>{compactNumber(campaign?.sent)}</strong>
-        </article>
-        <article className="stat-card">
-          <span>Failed</span>
-          <strong>{compactNumber(campaign?.failed)}</strong>
-        </article>
-        <article className="stat-card">
-          <span>Remaining</span>
-          <strong>{compactNumber(remaining)}</strong>
-        </article>
-        <article className="stat-card">
-          <span>Suppressions</span>
-          <strong>{compactNumber(data.suppressions.length)}</strong>
-        </article>
-        <article className="stat-card">
-          <span>Send rate</span>
-          <strong>{formatRate(campaign?.intervalMs)}</strong>
-        </article>
-      </section>
-
+    <main className="bareplay-panel">
       <WorkflowTabs
         campaigns={data.campaigns}
         draft={data.draft}
+        latestCampaignCompletedAt={
+          campaign?.completedAt ? formatDateTime(campaign.completedAt) : "Nothing sent yet"
+        }
         latestCampaignSubject={latestCampaign?.subject || template?.message.subject || ""}
+        progress={{
+          failed: compactNumber(campaign?.failed),
+          percent: campaign?.total
+            ? Math.min(
+                100,
+                (((campaign?.sent || 0) + (campaign?.failed || 0)) / campaign.total) * 100,
+              )
+            : 0,
+          processed: campaign?.total
+            ? `${compactNumber((campaign?.sent || 0) + (campaign?.failed || 0))} of ${compactNumber(campaign.total)} processed`
+            : "No campaign history yet",
+          remaining: compactNumber(remaining),
+          sendRate: formatRate(campaign?.intervalMs),
+          sent: compactNumber(campaign?.sent),
+          status: campaign?.status || "Ready",
+          subject: campaign?.subject || template?.message.subject || "No subject yet",
+          suppressionCount: compactNumber(data.suppressions.length),
+        }}
         recentFailures={data.recentFailures}
         recentLog={data.recentLog}
+        senderEmail={data.senderEmail}
+        senderName={data.senderName}
         suppressions={data.suppressions}
         templateName={template?.name || null}
         templates={data.templates}

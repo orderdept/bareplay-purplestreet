@@ -828,8 +828,174 @@ body:has(.bareplay-panel) {
   font-family: Inter, system-ui, sans-serif;
   max-width: none;
   min-height: 100vh;
-  padding-left: max(24px, calc((100vw - 1224px) / 2));
-  padding-right: max(24px, calc((100vw - 1224px) / 2));
+  padding: 0;
+}
+
+.module-shell {
+  min-height: 100vh;
+}
+
+.module-sidebar {
+  background: rgba(5, 5, 5, 0.96);
+  border-right: 1px solid var(--line);
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  left: 0;
+  overflow-y: auto;
+  padding: 24px 18px;
+  position: fixed;
+  top: 0;
+  width: 292px;
+  z-index: 10;
+}
+
+.module-main {
+  margin-left: 292px;
+  min-height: 100vh;
+  padding: 24px 28px 64px;
+}
+
+.module-brand {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 18px;
+}
+
+.module-brand h1 {
+  font-size: 1.9rem;
+  letter-spacing: 0;
+  margin-bottom: 0;
+}
+
+.module-back-link,
+.module-new-campaign,
+.module-nav-link,
+.module-quick-link {
+  appearance: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+}
+
+.module-back-link {
+  align-items: center;
+  border: 1px solid var(--line);
+  color: #ffffff;
+  display: flex;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.module-back-link:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #000000;
+}
+
+.module-nav {
+  display: grid;
+  gap: 8px;
+}
+
+.module-nav-link {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #ffffff;
+  display: grid;
+  gap: 3px;
+  min-height: 58px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.module-nav-link span {
+  color: #78ff82;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.module-nav-link strong {
+  font-size: 0.98rem;
+}
+
+.module-nav-link:hover {
+  background: #111111;
+  border-color: var(--line);
+}
+
+.module-nav-link[aria-selected="true"] {
+  background: #367cf6;
+  border-color: #367cf6;
+}
+
+.module-nav-link[aria-selected="true"] span {
+  color: #ffffff;
+}
+
+.module-new-campaign {
+  background: #78ff82;
+  border: 1px solid #78ff82;
+  color: #000000;
+  font-weight: 900;
+  margin-top: auto;
+  min-height: 44px;
+  padding: 0 14px;
+}
+
+.module-topbar {
+  align-items: center;
+  background: rgba(7, 7, 7, 0.86);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding: 16px 18px;
+  position: sticky;
+  top: 14px;
+  z-index: 5;
+}
+
+.module-topbar h2 {
+  font-size: 1.45rem;
+  margin: 0 0 4px;
+}
+
+.module-topbar p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.module-topbar-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.module-quick-link {
+  border: 1px solid var(--line);
+  min-height: 38px;
+  padding: 0 12px;
+}
+
+.module-command-band {
+  margin-bottom: 14px;
+}
+
+.module-summary-grid {
+  margin-bottom: 16px;
+}
+
+.workflow-panels {
+  min-width: 0;
 }
 
 .bareplay-panel h1,
@@ -845,6 +1011,13 @@ body:has(.bareplay-panel) {
   font-size: clamp(2.4rem, 5vw, 4.5rem);
   line-height: 0.96;
   margin-bottom: 14px;
+}
+
+.bareplay-panel .module-brand h1 {
+  font-size: 1.75rem;
+  line-height: 1.08;
+  margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .bareplay-panel .page-top {
@@ -1028,6 +1201,39 @@ body:has(.bareplay-panel) {
 }
 
 @media (max-width: 980px) {
+  .module-sidebar {
+    border-bottom: 1px solid var(--line);
+    border-right: 0;
+    bottom: auto;
+    position: static;
+    width: auto;
+  }
+
+  .module-main {
+    margin-left: 0;
+    padding: 18px 18px 56px;
+  }
+
+  .module-brand {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .module-brand .bareplay-logo {
+    margin-bottom: 0;
+    width: 150px;
+  }
+
+  .module-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .module-new-campaign {
+    margin-top: 0;
+  }
+
   .hero-band,
   .split-grid,
   .content-grid,
@@ -1047,6 +1253,7 @@ body:has(.bareplay-panel) {
   .host-template-bar,
   .host-form-grid,
   .page-top,
+  .module-topbar,
   .module-row,
   .section-head {
     grid-template-columns: 1fr;
@@ -1059,5 +1266,20 @@ body:has(.bareplay-panel) {
 
   .page-top-actions {
     width: 100%;
+  }
+}
+
+@media (max-width: 620px) {
+  .module-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .module-topbar {
+    align-items: stretch;
+    position: static;
+  }
+
+  .module-topbar-actions {
+    justify-content: flex-start;
   }
 }
